@@ -6,7 +6,7 @@ A node-red logging output node supporting multiple output targets:
   - System Console
   - Debug Window
   
-This project uses the winston and winston-elastic logging libraries
+This project uses the winston and winston-elasticsearch logging libraries
 
 
 Parts of this project is based on ['node-red-contrib-advance-logger'](https://github.com/jayathuam/node-red-contrib-advance-logger)
