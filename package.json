@@ -1,5 +1,5 @@
 {
-  "name": "red-contrib-log-elk",
+  "name": "node-red-contrib-log-elk",
   "version": "1.0.0",
   "description": "A node-red logging node with multiple outputs using the winston and winston-elastic logging libraries",
   "main": "log-elk.js",
