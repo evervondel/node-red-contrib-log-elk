@@ -9,4 +9,5 @@ A node-red logging output node supporting multiple output targets:
 This project uses the winston and winston-elasticsearch logging libraries
 
 
+
 Parts of this project is based on ['node-red-contrib-advance-logger'](https://github.com/jayathuam/node-red-contrib-advance-logger)
