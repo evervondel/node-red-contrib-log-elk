@@ -1,0 +1,7 @@
+/.sonar
+/.idea
+coverage
+node_modules
+/sonar-project.properties
+test
+package-lock.json

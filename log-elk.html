@@ -1,0 +1,90 @@
+<script type="text/javascript">
+    RED.nodes.registerType('log-elk', {
+      category: 'output',
+      color: '#E9967A',
+      defaults: {
+        name: {
+          value: ""
+        },
+        logger: {value:"", type:"log-elk-logger"},
+        complete: {
+          value: "false",
+          required: true
+        },
+        loglevel: {
+          value: "info",
+          required: true
+        }
+      },
+      inputs: 1,
+      outputs: 0,
+      icon: "file.svg",
+      align: "right",
+      label: function () {
+        return this.name || "log-elk";
+      },
+      oneditprepare: function () {
+        $("#node-input-typed-complete").typedInput({
+          types: ['msg', {
+            value: "full",
+            label: RED._("node-red:debug.msgobj"),
+            hasValue: false
+          }]
+        });
+        if (this.complete === "true" || this.complete === true) {
+          // show complete message object
+          $("#node-input-typed-complete").typedInput('type', 'full');
+        } else {
+          var property = (!this.complete || (this.complete === "false")) ? "payload" : this.complete + "";
+          $("#node-input-typed-complete").typedInput('type', 'msg');
+          $("#node-input-typed-complete").typedInput('value', property);
+        }
+        $("#node-input-typed-complete").on('change', function () {
+          if ($("#node-input-typed-complete").typedInput('type') === 'msg' &&
+            $("#node-input-typed-complete").typedInput('value') === ''
+          ) {
+            $("#node-input-typed-complete").typedInput('value', 'payload');
+          }
+        });
+  
+      },
+      oneditsave: function () {
+        var type = $("#node-input-typed-complete").typedInput('type');
+        if (type === 'full') {
+          $("#node-input-complete").val("true");
+        } else {
+          $("#node-input-complete").val($("#node-input-typed-complete").typedInput('value'));
+        }
+      }
+    });
+  </script>
+  
+  <script type="text/x-red" data-template-name="log-elk">
+      <div class="form-row">
+          <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+          <input type="text" id="node-input-name" placeholder="Name">
+      </div>
+      <div class="form-row">
+          <label for="node-input-logger"><i class="fa fa-random"></i> Logger</label>
+          <input type="text" id="node-input-logger" >
+      </div>
+      <div class="form-row">
+        <label for="node-input-loglevel"><i class="fa fa-pencil"></i> Log level</label>
+        <select id="node-input-loglevel">
+            <option value="error">ERROR</option>
+            <option value="warn">WARN</option>
+            <option value="info">INFO</option>
+            <option value="debug">DEBUG</option>
+        </select>
+      </div>
+      <div class="form-row">
+          <label for="node-input-typed-complete"><i class="fa fa-list"></i> Output</label>
+          <input id="node-input-typed-complete" type="text">
+          <input id="node-input-complete" type="hidden">
+      </div>
+  </script>
+  
+  <script type="text/x-red" data-help-name="log-elk">
+      <p>A logging node with multiple outputs using the winston and winston-elastic logging libraries</p>
+      <p>This node is based on parts of node-red-contrib-advance-logger</p>
+  </script>

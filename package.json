@@ -1,0 +1,22 @@
+{
+  "name": "red-contrib-log-elk",
+  "version": "1.0.0",
+  "description": "A node-red node for logging to ELK stack using winston",
+  "main": "log-elk.js",
+  "scripts": {
+    "release": "standard-version",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "node-red": {
+    "nodes": {
+      "log-elk": "log-elk.js",
+      "Log-elk-logger": "log-elk-logger.js"
+    }
+  },
+  "author": "ev",
+  "license": "MIT",
+  "dependencies": {
+    "winston": "^3.3.3",
+    "winston-elasticsearch": "^0.15.2"
+  }
+}

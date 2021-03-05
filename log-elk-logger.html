@@ -1,0 +1,96 @@
+<script type="text/javascript">
+  RED.nodes.registerType('log-elk-logger',{
+      category: 'config',
+      defaults: {
+          name: { value: "" },
+          url: {value:"http://localhost:9200"},
+          filename: { value: "log-elk.log", required: true },
+          maxsize: { value: 1, required: true, validate: function(v) { return v >= 1 } },
+          maxfiles: { value: 10, required: true, validate: function(v) { return v >= 1 } },
+          logelk: { value: false },
+          logfile: { value: false },
+          logconsole: { value: false },
+          logdebug: { value: false }
+      },
+      label: function() { return this.name; },
+
+      oneditprepare: function () {
+        $("#node-config-input-logfile").on("change", function() {
+          if ($("#node-config-input-logfile").is(':checked')) {
+            $("#node-config-input-logfile").attr("file", "file");
+            $("#filefields").show();
+          } else {
+            $("#node-config-input-logfile").removeAttr("file");
+            $("#filefields").hide();
+          }
+        });
+
+        $("#node-config-input-logelk").on("change", function() {
+          if ($("#node-config-input-logelk").is(':checked')) {
+            $("#node-config-input-logelk").attr("file", "file");
+            $("#elkfields").show();
+          } else {
+            $("#node-config-input-logelk").removeAttr("file");
+            $("#elkfields").hide();
+          }
+        });
+      }
+    });
+  </script>
+  
+  <script type="text/html" data-template-name="log-elk-logger">
+      <div class="form-row">
+          <label for="node-config-input-name"><i class="fa fa-tag"></i> Name</label>
+          <input type="text" id="node-config-input-name" placeholder="Name">
+      </div>
+      <div class="form-row">
+        <label><i class="fa fa-random"></i> Log output</span></label>
+        <input style="width:20px; vertical-align:baseline; margin-right:5px;" type="checkbox" id="node-config-input-logelk" autocomplete="off">
+        <label style="width:auto; margin-top:7px;" for="node-config-input-logelk"><span>ElasticSearch</span></label>
+        <br>
+        <label>&nbsp;</label>
+        <input style="width:20px; vertical-align:baseline; margin-right:5px;" type="checkbox" id="node-config-input-logfile" autocomplete="off">
+        <label style="width:auto; margin-top:7px;" for="node-config-input-logfile"><span>File</span></label>
+        <br>
+        <label>&nbsp;</label>
+        <input style="width:20px; vertical-align:baseline; margin-right:5px;" type="checkbox" id="node-config-input-logconsole" autocomplete="off">
+        <label style="width:auto; margin-top:7px;" for="node-config-input-logconsole"><span>System Console</span></label>
+        <br>
+        <label>&nbsp;</label>
+        <input style="width:20px; vertical-align:baseline; margin-right:5px;" type="checkbox" id="node-config-input-logdebug" autocomplete="off">
+        <label style="width:auto; margin-top:7px;" for="node-config-input-logdebug"><span>Debug Window</span></label>
+    </div>
+    <div id="elkfields">
+      <div class="form-row">
+        <label style="width:100%;"><span>ElasticSearch options</span></label>
+      </div>
+      <div class="form-row" style="padding-left:20px;">
+        <label for="node-config-input-url"><i class="fa fa-plug"></i> Elastic URL</label>
+        <input type="text" id="node-config-input-url">
+      </div>
+    </div>
+
+    <div id="filefields">
+      <div class="form-row">
+        <label style="width:100%;"><span>File options</span></label>
+      </div>
+      <div class="form-row" style="padding-left:20px;">
+        <label for="node-config-input-filename"><i class="fa fa-file"></i> Filename</label>
+        <input type="text" id="node-config-input-filename" placeholder="log-elk.log">
+      </div>
+      <div class="form-row" style="padding-left:20px;">
+        <label for="node-config-input-maxsize"><i class="fa fa-arrows-h"></i> File size</label>
+        <input type="number" id="node-config-input-maxsize" style="width:80px; height:25px;"  min="1">
+        <span> Mb</span>
+      </div>
+      <div class="form-row" style="padding-left:20px;">
+        <label for="node-config-input-maxFiles"><i class="fa fa-files-o"></i> Max Files</label>
+          <input type="number" id="node-config-input-maxFiles" style="width:80px; height:25px;" placeholder="10">
+      </div>
+    </div>
+
+  </script>
+  
+  <script type="text/x-red" data-help-name="log-elk-logger">
+      <p>The configuration for the log-elk logger</p>
+  </script>
