@@ -1,7 +1,7 @@
 {
   "name": "node-red-contrib-log-elk",
-  "version": "1.0.0",
-  "description": "A node-red logging node with multiple outputs using the winston and winston-elastic logging libraries",
+  "version": "1.0.1",
+  "description": "A Node-RED logging node with multiple outputs using the winston and winston-elasticsearch logging libraries",
   "main": "log-elk.js",
   "scripts": {
     "release": "standard-version",

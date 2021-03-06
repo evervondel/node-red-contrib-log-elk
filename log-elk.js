@@ -10,11 +10,13 @@ module.exports = function (RED) {
       var complete = config.complete;
       var loglevel = config.loglevel;
  
-      this.on('input', function (msg) {
+      this.on('input', function(msg, send, done) {
         if (node.logger)
         {
           node.logger.addToLog(loglevel, msg, complete);
         }
+
+        if (done) done();
       });
     }
 

@@ -7,8 +7,6 @@ module.exports = function (RED) {
       var winston = require('winston');
       var winstonElasticSearch  = require('winston-elasticsearch');
 
-      winston.handleExceptions(new winston.transports.File({filename: 'exceptions.log'}));
-
       RED.nodes.createNode(this, config);
       this.logger = null;
       var transports = [];
@@ -58,6 +56,7 @@ module.exports = function (RED) {
       var consoleLog = config.logconsole;
       if (consoleLog) {
         transports.push(new (winston.transports.Console)({
+          handleExceptions: true,
           format: winston.format.combine(winston.format.timestamp(), lineFormat)       
         }));
       }
@@ -70,7 +69,21 @@ module.exports = function (RED) {
         level: 'debug',
         transports: transports
         });
+
+        this.debug("log-elk logger created");
       }
+
+      this.on('close', function(removed, done) {
+        // close logger
+        if (this.loggger)
+        {
+          this.logger.close();
+        }
+
+        this.debug("log-elk logger closed");
+
+        if (done) done();
+      });
     }  
 
   
@@ -155,6 +168,4 @@ module.exports = function (RED) {
         }
       }
     }
-    //  this.addToLogger(loglevel, msg, complete);
-    // };
   };
