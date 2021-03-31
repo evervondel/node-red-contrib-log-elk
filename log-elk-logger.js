@@ -24,9 +24,22 @@ module.exports = function (RED) {
       var elkLog = config.logelk;
       if (elkLog) {
         var url = config.url;
+        var user = this.credentials.username || '';
+        var pass = this.credentials.password || ''; 
         if (url) {
           transports.push(new winstonElasticSearch.ElasticsearchTransport({
-            clientOpts: { node: url }
+            clientOpts: { 
+              node: url,
+              auth: {
+                username: user,
+                password: pass
+              },
+              ssl: {
+                // accept any
+                rejectUnauthorized: false
+              }
+            },
+            transformer: transformer
           }));
         }
       }
@@ -86,7 +99,21 @@ module.exports = function (RED) {
       });
     }  
 
-  
+    function transformer(logData) {
+      const transformed = {};
+      transformed['@timestamp'] = logData.timestamp ? logData.timestamp : new Date().toISOString();
+      transformed.message = logData.message;
+      transformed.severity = logData.level;
+      transformed.level = logData.level;
+      transformed.fields = logData.meta;
+    
+      if (logData.meta['transaction.id']) transformed.transaction = { id: logData.meta['transaction.id'] };
+      if (logData.meta['trace.id']) transformed.trace = { id: logData.meta['trace.id'] };
+      if (logData.meta['span.id']) transformed.span = { id: logData.meta['span.id'] };
+    
+      return transformed;
+    };
+
     function sendDebug(msg) {
       if (msg.msg instanceof Error) {
         msg.format = "error";
@@ -148,7 +175,13 @@ module.exports = function (RED) {
     }
   
 
-    RED.nodes.registerType("log-elk-logger", LogElkLoggerNode);
+    RED.nodes.registerType("log-elk-logger", LogElkLoggerNode,
+    {
+      credentials: {
+          username: {type:"text"},
+          password: {type:"password"}
+      }
+    });
 
     LogElkLoggerNode.prototype.addToLog = function addTolog(loglevel, msg, complete) {
       if (complete === true || complete === "complete" || complete === "true") {
@@ -156,7 +189,7 @@ module.exports = function (RED) {
           sendDebug({id: this.id, name: this.name, topic: msg.topic, msg: msg, _path: msg._path});
         }
         if (this.logger) {
-          this.logger.log(loglevel, JSON.stringify(msg));
+          this.logger.log(loglevel, JSON.stringify(msg), msg.meta);
         }
       }
       else if (complete !== undefined && complete !== null && complete !== "" && complete !== false && complete !== "false") {
@@ -164,7 +197,7 @@ module.exports = function (RED) {
           sendDebug({id: this.id, name: this.name, topic: msg.topic, msg: msg[complete], _path: msg._path});
         }
         if (this.logger) {
-          this.logger.log(loglevel, JSON.stringify(msg[complete]));
+          this.logger.log(loglevel, JSON.stringify(msg[complete]), msg.meta);
         }
       }
     }

@@ -1,9 +1,15 @@
 <script type="text/javascript">
   RED.nodes.registerType('log-elk-logger',{
       category: 'config',
+      credentials: {
+        username: {type:"text"},
+        password: {type:"password"}
+      },
       defaults: {
           name: { value: "" },
           url: {value:"http://localhost:9200"},
+          username: { value: "" },
+          password: { value: "" },
           filename: { value: "log-elk.log", required: true },
           maxsize: { value: 1, required: true, validate: function(v) { return v >= 1 } },
           maxfiles: { value: 10, required: true, validate: function(v) { return v >= 1 } },
@@ -67,6 +73,14 @@
       <div class="form-row" style="padding-left:20px;">
         <label for="node-config-input-url"><i class="fa fa-plug"></i> Elastic URL</label>
         <input type="text" id="node-config-input-url">
+      </div>
+      <div class="form-row" style="padding-left:20px;">
+        <label for="node-config-input-username"><i class="fa fa-user"></i> Username</label>
+        <input type="text" id="node-config-input-username">
+      </div>
+      <div class="form-row" style="padding-left:20px;">
+        <label for="node-config-input-password"><i class="fa fa-key"></i> Password</label>
+        <input type="password" id="node-config-input-password">
       </div>
     </div>
 
