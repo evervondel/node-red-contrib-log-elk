@@ -183,6 +183,14 @@ module.exports = function (RED) {
       }
     });
 
+    // get a value for a message path seperated with '.'
+    const get = (obj, path) =>
+      path
+      .replace(/\[([^\[\]]*)\]/g, '.$1.')
+      .split('.')
+      .filter(t => t !== '')
+      .reduce((prev, cur) => prev && prev[cur], obj);
+ 
     LogElkLoggerNode.prototype.addToLog = function addTolog(loglevel, msg, complete) {
       if (complete === true || complete === "complete" || complete === "true") {
         if (this.debugLog === true || this.debugLog === "true") {
@@ -194,10 +202,10 @@ module.exports = function (RED) {
       }
       else if (complete !== undefined && complete !== null && complete !== "" && complete !== false && complete !== "false") {
         if (this.debugLog === true || this.debugLog === "true") {
-          sendDebug({id: this.id, name: this.name, topic: msg.topic, msg: msg[complete], _path: msg._path});
+          sendDebug({id: this.id, name: this.name, topic: msg.topic, msg: get(msg, complete), _path: msg._path});
         }
         if (this.logger) {
-          this.logger.log(loglevel, JSON.stringify(msg[complete]), msg.meta);
+          this.logger.log(loglevel, JSON.stringify(get(msg, complete)), msg.meta);
         }
       }
     }

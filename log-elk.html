@@ -12,7 +12,7 @@
           required: true
         },
         loglevel: {
-          value: "info",
+          value: "debug",
           required: true
         }
       },
@@ -24,6 +24,7 @@
         return this.name || "log-elk";
       },
       oneditprepare: function () {
+        // message
         $("#node-input-typed-complete").typedInput({
           types: ['msg', {
             value: "full",
@@ -46,7 +47,38 @@
             $("#node-input-typed-complete").typedInput('value', 'payload');
           }
         });
-  
+
+        // loglevel
+        $("#node-input-typed-loglevel").typedInput({
+          types: [
+            'msg', 
+            {
+              value:"level",
+              label:"level",
+              options:["error","warn", "info", "debug"]
+            }
+        ]
+        });
+
+        if (this.loglevel === "error" || 
+            this.loglevel === "warn" ||
+            this.loglevel === "info" ||
+            this.loglevel === "debug") {
+          // fixed level
+          $("#node-input-typed-loglevel").typedInput('type', 'level');
+          $("#node-input-typed-loglevel").typedInput('value', this.loglevel);
+        } else {
+          $("#node-input-typed-loglevel").typedInput('type', 'msg');
+          $("#node-input-typed-loglevel").typedInput('value', this.loglevel);
+        }
+        $("#node-input-typed-loglevel").on('change', function () {
+          if ($("#node-input-typed-loglevel").typedInput('type') === 'msg' ) {
+            var value = $("#node-input-typed-loglevel").typedInput('value')    
+            if (value === "error" || value === "warn" || value === "info" || value === "debug") {
+              $("#node-input-typed-loglevel").typedInput('value', 'loglevel');
+            }
+          }
+        });
       },
       oneditsave: function () {
         var type = $("#node-input-typed-complete").typedInput('type');
@@ -55,6 +87,8 @@
         } else {
           $("#node-input-complete").val($("#node-input-typed-complete").typedInput('value'));
         }
+
+        $("#node-input-loglevel").val($("#node-input-typed-loglevel").typedInput('value'));
       }
     });
   </script>
@@ -69,13 +103,9 @@
           <input type="text" id="node-input-logger" >
       </div>
       <div class="form-row">
-        <label for="node-input-loglevel"><i class="fa fa-pencil"></i> Log level</label>
-        <select id="node-input-loglevel">
-            <option value="error">ERROR</option>
-            <option value="warn">WARN</option>
-            <option value="info">INFO</option>
-            <option value="debug">DEBUG</option>
-        </select>
+        <label for="node-input-typed-loglevel"><i class="fa fa-list"></i> Log Level</label>
+        <input id="node-input-typed-loglevel" type="text">
+        <input id="node-input-loglevel" type="hidden">
       </div>
       <div class="form-row">
           <label for="node-input-typed-complete"><i class="fa fa-list"></i> Output</label>
@@ -85,6 +115,15 @@
   </script>
   
   <script type="text/x-red" data-help-name="log-elk">
-      <p>A logging node with multiple outputs using the winston and winston-elastic logging libraries</p>
+      <p>A logging node with multiple log outputs using the winston and winston-elastic logging libraries</p>
+      <h3>Details</h3>
+      <p>Output <code>msg.payload</code> (or <code>msg.&lt;custom path&gt;</code>) or complete <code>msg</code> is used as input of the logged message.
+      If it contains an Object it will be converted to a JSON string before being sent.</p>
+      <p>The Log Level (error, warn, info, debug) used can be configured in the node or can be set
+      by <code>msg.loglevel</code> (or <code>msg.&lt;custom path&gt;</code>). 
+      If the content is not one of ('error', 'warn', 'info', 'debug'), 'debug' will be used as fallback</p>
+      <p>If <code>msg.meta</code> is set, the meta info Object will be added to the file and ElasticSearch output as a JSON string.</p>
+
+      <h3>References</h3>
       <p>This node is based on parts of node-red-contrib-advance-logger</p>
   </script>
