@@ -1,7 +1,7 @@
 module.exports = function (RED) {
     "use strict";
     var debuglength = RED.settings.debugMaxLength || 1000;
-    var util = require("util");
+    const safeJSONStringify = require("json-stringify-safe");
 
     function LogElkLoggerNode(config) {
       var winston = require('winston');
@@ -114,66 +114,11 @@ module.exports = function (RED) {
       return transformed;
     };
 
+
     function sendDebug(msg) {
-      if (msg.msg instanceof Error) {
-        msg.format = "error";
-        msg.msg = msg.msg.toString();
-      } else if (msg.msg instanceof Buffer) {
-        msg.format = "buffer [" + msg.msg.length + "]";
-        msg.msg = msg.msg.toString('hex');
-      } else if (msg.msg && typeof msg.msg === 'object') {
-        var seen = [];
-        try {
-          msg.format = msg.msg.constructor.name || "Object";
-        } catch (err) {
-          msg.format = "Object";
-        }
-        var isArray = util.isArray(msg.msg);
-        if (isArray) {
-          msg.format = "array [" + msg.msg.length + "]";
-        }
-        if (isArray || (msg.format === "Object")) {
-          msg.msg = JSON.stringify(msg.msg, function (key, value) {
-            if (typeof value === 'object' && value !== null) {
-              if (seen.indexOf(value) !== -1) {
-                return "[circular]";
-              }
-              seen.push(value);
-            }
-            return value;
-          }, " ");
-        } else {
-          try {
-            msg.msg = msg.msg.toString();
-          }
-          catch (e) {
-            msg.msg = "[Type not printable]";
-          }
-        }
-        seen = null;
-      } else if (typeof msg.msg === "boolean") {
-        msg.format = "boolean";
-        msg.msg = msg.msg.toString();
-      } else if (typeof msg.msg === "number") {
-        msg.format = "number";
-        msg.msg = msg.msg.toString();
-      } else if (msg.msg === 0) {
-        msg.format = "number";
-        msg.msg = "0";
-      } else if (msg.msg === null || typeof msg.msg === "undefined") {
-        msg.format = (msg.msg === null) ? "null" : "undefined";
-        msg.msg = "(undefined)";
-      } else {
-        msg.format = "string [" + msg.msg.length + "]";
-        msg.msg = msg.msg;
-      }
-  
-      if (msg.msg.length > debuglength) {
-        msg.msg = msg.msg.substr(0, debuglength) + " ....";
-      }
-      RED.comms.publish("debug", msg);
+      msg = RED.util.encodeObject(msg, {maxLength:debuglength});
+      RED.comms.publish("debug",msg);
     }
-  
 
     RED.nodes.registerType("log-elk-logger", LogElkLoggerNode,
     {
@@ -183,29 +128,36 @@ module.exports = function (RED) {
       }
     });
 
-    // get a value for a message path seperated with '.'
-    const get = (obj, path) =>
-      path
-      .replace(/\[([^\[\]]*)\]/g, '.$1.')
-      .split('.')
-      .filter(t => t !== '')
-      .reduce((prev, cur) => prev && prev[cur], obj);
- 
     LogElkLoggerNode.prototype.addToLog = function addTolog(loglevel, msg, complete) {
       if (complete === true || complete === "complete" || complete === "true") {
+        // Log complete message
         if (this.debugLog === true || this.debugLog === "true") {
           sendDebug({id: this.id, name: this.name, topic: msg.topic, msg: msg, _path: msg._path});
         }
         if (this.logger) {
-          this.logger.log(loglevel, JSON.stringify(msg), msg.meta);
+          this.logger.log(loglevel, safeJSONStringify(msg), msg.meta);
         }
       }
       else if (complete !== undefined && complete !== null && complete !== "" && complete !== false && complete !== "false") {
+        // Log part of message
+        var output;
+        try { output = RED.util.getMessageProperty(msg, complete); }
+        catch(err) {
+          node.error(err);
+          return;
+        }
+
         if (this.debugLog === true || this.debugLog === "true") {
-          sendDebug({id: this.id, name: this.name, topic: msg.topic, msg: get(msg, complete), _path: msg._path});
+          sendDebug({id: this.id, name: this.name, topic: msg.topic, msg: output, _path: msg._path});
         }
         if (this.logger) {
-          this.logger.log(loglevel, JSON.stringify(get(msg, complete)), msg.meta);
+          if (typeof output === "string") {
+            this.logger.log(loglevel, output, msg.meta);
+          } else if (typeof output === "object") {
+            this.logger.log(loglevel, safeJSONStringify(output), msg.meta);
+          } else {
+            this.logger.log(loglevel, safeJSONStringify(output), msg.meta);
+          }
         }
       }
     }

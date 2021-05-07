@@ -10,15 +10,6 @@ module.exports = function (RED) {
       var complete = config.complete;
       var loglevel = config.loglevel || "debug";
 
-      // get a value for a message path seperated with '.'
-      const get = (obj, path) =>
-         path
-         .replace(/\[([^\[\]]*)\]/g, '.$1.')
-         .split('.')
-         .filter(t => t !== '')
-         .reduce((prev, cur) => prev && prev[cur], obj);
-      
-
       this.on('input', function(msg, send, done) {
         if (node.logger)
         {
@@ -28,7 +19,11 @@ module.exports = function (RED) {
             level = loglevel;
           } else {
             // get loglevel from message
-            level = get(msg, loglevel);
+            try { level = RED.util.getMessageProperty(msg, loglevel); }
+            catch(err) {
+              level = "debug";
+            }
+    
             if (!(level === "error" || level === "warn" || level === "info" || level === "debug")) {
               // invalid log level, default to debug
               level = "debug";
