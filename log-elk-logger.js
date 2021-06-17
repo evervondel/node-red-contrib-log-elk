@@ -50,8 +50,8 @@ module.exports = function (RED) {
         var filename = config.filename;
         if (filename) {
           var maxFiles = 1;
-          var filesize = 1073741824;
-          if (config.maxsize >= 1) filesize = config.maxsize * 1073741824;
+          var filesize = 1048576;
+          if (config.maxsize >= 1) filesize = config.maxsize * 1048576;
           if (config.maxFiles >= 1) maxfiles = config.maxFiles;
 
           transports.push(new (winston.transports.File)({
