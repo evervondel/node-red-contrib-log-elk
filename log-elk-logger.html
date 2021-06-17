@@ -12,7 +12,7 @@
           password: { value: "" },
           filename: { value: "log-elk.log", required: true },
           maxsize: { value: 1, required: true, validate: function(v) { return v >= 1 } },
-          maxfiles: { value: 1, required: true, validate: function(v) { return v >= 1 } },
+          maxfiles: { value: 2, required: true, validate: function(v) { return v >= 1 } },
           logelk: { value: false },
           logfile: { value: false },
           logconsole: { value: false },
@@ -98,8 +98,8 @@
         <span> Mb</span>
       </div>
       <div class="form-row" style="padding-left:20px;">
-        <label for="node-config-input-maxFiles"><i class="fa fa-files-o"></i> Max Files</label>
-          <input type="number" id="node-config-input-maxFiles" style="width:80px; height:25px;" placeholder="1">
+        <label for="node-config-input-maxfiles"><i class="fa fa-files-o"></i> Max Files</label>
+          <input type="number" id="node-config-input-maxfiles" style="width:80px; height:25px;" placeholder="2">
       </div>
     </div>
 

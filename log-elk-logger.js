@@ -49,15 +49,15 @@ module.exports = function (RED) {
       if (fileLog) {
         var filename = config.filename;
         if (filename) {
-          var maxFiles = 1;
+          var maxfiles = 1;
           var filesize = 1048576;
           if (config.maxsize >= 1) filesize = config.maxsize * 1048576;
-          if (config.maxFiles >= 1) maxfiles = config.maxFiles;
+          if (config.maxfiles >= 1) maxfiles = config.maxfiles;
 
           transports.push(new (winston.transports.File)({
             filename: filename,
             maxsize: filesize,
-            maxFiles: maxFiles,
+            maxFiles: maxfiles,
             handleExceptions: true,
             format: winston.format.combine(winston.format.timestamp(), lineFormat)       
             })
