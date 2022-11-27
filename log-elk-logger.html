@@ -8,8 +8,6 @@
       defaults: {
           name: { value: "" },
           url: {value:"http://localhost:9200"},
-          username: { value: "" },
-          password: { value: "" },
           filename: { value: "log-elk.log", required: true },
           maxsize: { value: 1, required: true, validate: function(v) { return v >= 1 } },
           maxfiles: { value: 2, required: true, validate: function(v) { return v >= 1 } },
