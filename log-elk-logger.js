@@ -89,7 +89,7 @@ module.exports = function (RED) {
         transports: transports
         });
 
-        logger.on('error', (error) => {
+        this.logger.on('error', (error) => {
           console.error('Error in logger caught', error);
         });
         
