@@ -27,7 +27,7 @@ module.exports = function (RED) {
         var user = this.credentials.username || '';
         var pass = this.credentials.password || ''; 
         if (url) {
-          transports.push(new winstonElasticSearch.ElasticsearchTransport({
+          const esTransport = new winstonElasticSearch.ElasticsearchTransport({
             clientOpts: { 
               node: url,
               auth: {
@@ -40,7 +40,13 @@ module.exports = function (RED) {
               }
             },
             transformer: transformer
-          }));
+          })
+
+          transports.push(esTransport);
+
+          esTransport.on('error', (error) => {
+            console.error('Error in esTransport caught', error);
+          });
         }
       }
 
@@ -83,6 +89,10 @@ module.exports = function (RED) {
         transports: transports
         });
 
+        logger.on('error', (error) => {
+          console.error('Error in logger caught', error);
+        });
+        
         this.debug("log-elk logger created");
       }
 
