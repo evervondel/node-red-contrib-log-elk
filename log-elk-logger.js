@@ -64,7 +64,6 @@ module.exports = function (RED) {
             filename: filename,
             maxsize: filesize,
             maxFiles: maxfiles,
-            handleExceptions: true,
             format: winston.format.combine(winston.format.timestamp(), lineFormat)       
             })
           );
@@ -75,7 +74,6 @@ module.exports = function (RED) {
       var consoleLog = config.logconsole;
       if (consoleLog) {
         transports.push(new (winston.transports.Console)({
-          handleExceptions: true,
           format: winston.format.combine(winston.format.timestamp(), lineFormat)       
         }));
       }
@@ -84,9 +82,19 @@ module.exports = function (RED) {
 
       if (elkLog || fileLog || consoleLog) {
         this.logger = new winston.createLogger({
-        exitOnError: false,
         level: 'debug',
-        transports: transports
+        transports: transports,
+        exceptionHandlers: [
+          new (winston.transports.Console)({
+            format: winston.format.combine(winston.format.timestamp(), lineFormat)       
+          })
+        ],  
+        rejectionHandlers: [
+          new (winston.transports.Console)({
+            format: winston.format.combine(winston.format.timestamp(), lineFormat)       
+          })
+        ],  
+        exitOnError: false
         });
 
         this.logger.on('error', (error) => {
