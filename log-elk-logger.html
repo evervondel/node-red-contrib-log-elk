@@ -3,15 +3,20 @@
       category: 'config',
       credentials: {
         username: {type:"text"},
-        password: {type:"password"}
+        password: {type:"password"},
+        loki_username: {type:"text"},
+        loki_password: {type:"password"}
       },
       defaults: {
           name: { value: "" },
           url: {value:"http://localhost:9200"},
+          loki_url: {value:"http://localhost:3100"},
+          loki_app: {value:"node-red"},
           filename: { value: "log-elk.log", required: true },
           maxsize: { value: 1, required: true, validate: function(v) { return v >= 1 } },
           maxfiles: { value: 2, required: true, validate: function(v) { return v >= 1 } },
           logelk: { value: false },
+          logloki: { value: false },
           logfile: { value: false },
           logconsole: { value: false },
           logdebug: { value: false }
@@ -38,6 +43,17 @@
             $("#elkfields").hide();
           }
         });
+
+        $("#node-config-input-logloki").on("change", function() {
+          if ($("#node-config-input-logloki").is(':checked')) {
+            $("#node-config-input-logloki").attr("file", "file");
+            $("#lokifields").show();
+          } else {
+            $("#node-config-input-logloki").removeAttr("file");
+            $("#lokifields").hide();
+          }
+        });
+
       }
     });
   </script>
@@ -51,6 +67,10 @@
         <label><i class="fa fa-random"></i> Log output</span></label>
         <input style="width:20px; vertical-align:baseline; margin-right:5px;" type="checkbox" id="node-config-input-logelk" autocomplete="off">
         <label style="width:auto; margin-top:7px;" for="node-config-input-logelk"><span>ElasticSearch</span></label>
+        <br>
+        <label>&nbsp;</label>
+        <input style="width:20px; vertical-align:baseline; margin-right:5px;" type="checkbox" id="node-config-input-logloki" autocomplete="off">
+        <label style="width:auto; margin-top:7px;" for="node-config-input-logloki"><span>Loki</span></label>
         <br>
         <label>&nbsp;</label>
         <input style="width:20px; vertical-align:baseline; margin-right:5px;" type="checkbox" id="node-config-input-logfile" autocomplete="off">
@@ -79,6 +99,28 @@
       <div class="form-row" style="padding-left:20px;">
         <label for="node-config-input-password"><i class="fa fa-key"></i> Password</label>
         <input type="password" id="node-config-input-password">
+      </div>
+    </div>
+
+    <div id="lokifields">
+      <div class="form-row">
+        <label style="width:100%;"><span>Loki options</span></label>
+      </div>
+      <div class="form-row" style="padding-left:20px;">
+        <label for="node-config-input-loki_url"><i class="fa fa-plug"></i> Loki URL</label>
+        <input type="text" id="node-config-input-loki_url">
+      </div>
+      <div class="form-row" style="padding-left:20px;">
+        <label for="node-config-input-loki_username"><i class="fa fa-user"></i> Username</label>
+        <input type="text" id="node-config-input-loki_username">
+      </div>
+      <div class="form-row" style="padding-left:20px;">
+        <label for="node-config-input-loki_password"><i class="fa fa-key"></i> Password</label>
+        <input type="password" id="node-config-input-loki_password">
+      </div>
+      <div class="form-row" style="padding-left:20px;">
+        <label for="node-config-input-loki_app"><i class="fa fa-tag"></i> App Label</label>
+        <input type="text" id="node-config-input-loki_app">
       </div>
     </div>
 

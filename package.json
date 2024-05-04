@@ -1,7 +1,7 @@
 {
   "name": "node-red-contrib-log-elk",
-  "version": "1.2.8",
-  "description": "A Node-RED logging node with multiple outputs using the winston and winston-elasticsearch logging libraries",
+  "version": "1.3.0",
+  "description": "A Node-RED logging node with multiple outputs using the winston,winston-elasticsearch and winston-loki logging libraries",
   "main": "log-elk.js",
   "scripts": {
     "release": "standard-version",
@@ -9,12 +9,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/objt-ev/node-red-contrib-log-elk"
+    "url": "https://github.com/evervondel/node-red-contrib-log-elk"
   },
   "keywords": [
     "logger",
     "winston",
     "elasticsearch",
+    "loki",
     "node-red"
   ],
   "node-red": {
@@ -30,8 +31,9 @@
   "author": "ev",
   "license": "MIT",
   "dependencies": {
-    "winston": "^3.3.3",
-    "winston-elasticsearch": "^0.15.2",
+    "winston": "^3.13.0",
+    "winston-elasticsearch": "^0.18.0",
+    "winston-loki": "^6.1.2",
     "json-stringify-safe": "^5.0.1"
   }
 }

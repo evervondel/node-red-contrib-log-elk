@@ -115,14 +115,14 @@
   </script>
   
   <script type="text/x-red" data-help-name="log-elk">
-      <p>A logging node with multiple log outputs using the winston and winston-elastic logging libraries</p>
+      <p>A logging node with multiple log outputs using the winston, winston-elastic and winston-loki logging libraries</p>
       <h3>Details</h3>
       <p>Output <code>msg.payload</code> (or <code>msg.&lt;custom path&gt;</code>) or complete <code>msg</code> is used as input of the logged message.
       If it contains an Object it will be converted to a JSON string before being sent.</p>
       <p>The Log Level (error, warn, info, debug) used can be configured in the node or can be set
       by <code>msg.loglevel</code> (or <code>msg.&lt;custom path&gt;</code>). 
       If the content is not one of ('error', 'warn', 'info', 'debug'), 'debug' will be used as fallback</p>
-      <p>If <code>msg.meta</code> is set, the meta info Object will be added to the file and ElasticSearch output as a JSON string.</p>
+      <p>If <code>msg.meta</code> is set, the meta info Object will be added to the output.</p>
 
       <h3>References</h3>
       <p>This node is based on parts of node-red-contrib-advance-logger</p>

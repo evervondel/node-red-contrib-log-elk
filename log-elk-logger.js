@@ -6,6 +6,7 @@ module.exports = function (RED) {
     function LogElkLoggerNode(config) {
       var winston = require('winston');
       var winstonElasticSearch  = require('winston-elasticsearch');
+      const LokiTransport = require("winston-loki");
 
       RED.nodes.createNode(this, config);
       this.logger = null;
@@ -49,6 +50,32 @@ module.exports = function (RED) {
           });
         }
       }
+
+      // Loki settings
+      var lokiLog = config.logloki;
+      if (lokiLog) {
+        var url = config.loki_url;
+        var auth;
+        if (this.credentials.loki_username) {
+          auth = this.credentials.loki_username + ':' + this.credentials.loki_password;
+        } 
+        if (url) {
+          const lokiTransport = new LokiTransport({
+            host: url,
+            json: true,
+            basicAuth: auth,
+            labels: { app: config.loki_app || 'node-red' },
+            format: winston.format.combine(winston.format.timestamp(), winston.format.json())       
+          })
+
+          transports.push(lokiTransport);
+
+          lokiTransport.on('error', (error) => {
+            console.error('Error in lokiTransport caught', error);
+          });
+        }
+      }
+
 
       // File settings
       var fileLog = config.logfile;
