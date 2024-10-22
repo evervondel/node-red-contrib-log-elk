@@ -1,6 +1,6 @@
 {
   "name": "node-red-contrib-log-elk",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "description": "A Node-RED logging node with multiple outputs using the winston,winston-elasticsearch and winston-loki logging libraries",
   "main": "log-elk.js",
   "scripts": {
@@ -32,8 +32,8 @@
   "license": "MIT",
   "dependencies": {
     "winston": "^3.13.0",
-    "winston-elasticsearch": "^0.18.0",
-    "winston-loki": "^6.1.2",
+    "winston-elasticsearch": "^0.15.2",
+    "winston-loki": "^6.1.3",
     "json-stringify-safe": "^5.0.1"
   }
 }

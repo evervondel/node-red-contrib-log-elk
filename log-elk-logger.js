@@ -107,7 +107,7 @@ module.exports = function (RED) {
 
       this.debugLog = config.logdebug;
 
-      if (elkLog || fileLog || consoleLog) {
+      if (elkLog || lokiLog || fileLog || consoleLog) {
         this.logger = new winston.createLogger({
         level: 'debug',
         transports: transports,
