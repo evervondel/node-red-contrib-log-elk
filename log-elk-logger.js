@@ -169,7 +169,9 @@ module.exports = function (RED) {
     {
       credentials: {
           username: {type:"text"},
-          password: {type:"password"}
+          password: {type:"password"},
+          loki_username: {type:"text"},
+          loki_password: {type:"password"}
       }
     });
 
