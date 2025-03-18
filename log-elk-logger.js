@@ -56,11 +56,16 @@ module.exports = function (RED) {
       if (lokiLog) {
         var url = config.loki_url;
         var auth;
+        var lokiHeaders = {};
         if (this.credentials.loki_username) {
           auth = this.credentials.loki_username + ':' + this.credentials.loki_password;
-        } 
+        }
+        if (config.loki_headers) {
+          lokiHeaders = JSON.parse(config.loki_headers);
+        }
         if (url) {
           const lokiTransport = new LokiTransport({
+            headers: lokiHeaders,
             host: url,
             json: true,
             basicAuth: auth,
