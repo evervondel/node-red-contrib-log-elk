@@ -15,6 +15,13 @@
           filename: { value: "log-elk.log", required: true },
           maxsize: { value: 1, required: true, validate: function(v) { return v >= 1 } },
           maxfiles: { value: 2, required: true, validate: function(v) { return v >= 1 } },
+          loki_headers: { value: "{}", required: false, validate: function(v) {
+                try {
+                    JSON.parse(v);
+                    return true;
+                } catch (e) { return false; }
+            }
+          },
           logelk: { value: false },
           logloki: { value: false },
           logfile: { value: false },
@@ -119,6 +126,10 @@
         <input type="password" id="node-config-input-loki_password">
       </div>
       <div class="form-row" style="padding-left:20px;">
+        <label for="node-config-input-loki_headers"><i class="fa fa-heading"></i> Headers (as JSON)</label>
+        <input type="text" id="node-config-input-loki_headers">
+      </div>
+      <div class="form-row" style="padding-left:20px;">
         <label for="node-config-input-loki_app"><i class="fa fa-tag"></i> App Label</label>
         <input type="text" id="node-config-input-loki_app">
       </div>
@@ -144,7 +155,7 @@
     </div>
 
   </script>
-  
+
   <script type="text/x-red" data-help-name="log-elk-logger">
       <p>The configuration for the log-elk logger</p>
   </script>
