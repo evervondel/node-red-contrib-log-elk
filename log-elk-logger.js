@@ -3,6 +3,10 @@ module.exports = function (RED) {
     var debuglength = RED.settings.debugMaxLength || 1000;
     const safeJSONStringify = require("json-stringify-safe");
 
+    function replaceEnvVar(str) {
+      return str.replace(/\$\{(\w+)\}/g, (match, p1) => process.env[p1] || match);
+    }
+
     function LogElkLoggerNode(config) {
       var winston = require('winston');
       var winstonElasticSearch  = require('winston-elasticsearch');
@@ -61,7 +65,7 @@ module.exports = function (RED) {
           auth = this.credentials.loki_username + ':' + this.credentials.loki_password;
         }
         if (config.loki_headers) {
-          lokiHeaders = JSON.parse(config.loki_headers);
+          lokiHeaders = JSON.parse(replaceEnvVar(config.loki_headers));
         }
         if (url) {
           const lokiTransport = new LokiTransport({
