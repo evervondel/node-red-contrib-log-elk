@@ -157,5 +157,61 @@
   </script>
 
   <script type="text/x-red" data-help-name="log-elk-logger">
-      <p>The configuration for the log-elk logger</p>
+      <p>The configuration for the log-elk logger node allows you to set up logging to various outputs, including ElasticSearch, Loki, local files, the system console, and the Node-RED debug window. This node is highly configurable and supports multiple logging destinations simultaneously.</p>
+      
+      <h3>Logging Outputs</h3>
+      <ul>
+          <li><b>ElasticSearch:</b> 
+              <p>Logs to an ElasticSearch instance. You need to provide the following:</p>
+              <ul>
+                  <li><b>Elastic URL:</b> The URL of your ElasticSearch instance (e.g., http://localhost:9200).</li>
+                  <li><b>Username:</b> The username for authentication, if required.</li>
+                  <li><b>Password:</b> The password for authentication, if required.</li>
+              </ul>
+          </li>
+          <li><b>Loki:</b> 
+              <p>Logs to a Loki instance. You need to configure the following:</p>
+              <ul>
+                  <li><b>Loki URL:</b> The URL of your Loki instance (e.g., http://localhost:3100).</li>
+                  <li><b>Username:</b> The username for authentication, if required.</li>
+                  <li><b>Password:</b> The password for authentication, if required.</li>
+                  <li><b>Headers (JSON):</b> Additional headers to include in requests, specified as a JSON object. For example:</li>
+                  <pre>
+                  {
+                      "X-Scope-OrgID": "${TENANT}"
+                  }
+                  </pre>
+                  <li><b>App Label:</b> A label to identify the application in Loki logs (e.g., "node-red").</li>
+              </ul>
+          </li>
+          <li><b>File:</b> 
+              <p>Logs to a local file. You need to configure the following:</p>
+              <ul>
+                  <li><b>Filename:</b> The name of the log file (e.g., log-elk.log).</li>
+                  <li><b>File size:</b> The maximum size of the log file in megabytes (minimum: 1 MB).</li>
+                  <li><b>Max Files:</b> The maximum number of log files to retain (minimum: 1).</li>
+              </ul>
+          </li>
+          <li><b>System Console:</b> 
+              <p>Logs messages to the system console. This is useful for debugging or monitoring logs directly in the console output.</p>
+          </li>
+          <li><b>Debug Window:</b> 
+              <p>Logs messages to the Node-RED debug window. This is useful for viewing logs directly within the Node-RED editor.</p>
+          </li>
+      </ul>
+      
+      <h3>How to Use</h3>
+      <p>To configure the logger:</p>
+      <ol>
+          <li>Enable the desired logging outputs by checking the corresponding checkboxes.</li>
+          <li>For each enabled output, fill in the required fields that appear below the checkbox.</li>
+          <li>Ensure that all required fields are filled in correctly. Validation rules are applied to ensure proper configuration.</li>
+      </ol>
+
+      <h3>Validation Rules</h3>
+      <ul>
+          <li><b>File size:</b> Must be at least 1 MB.</li>
+          <li><b>Max files:</b> Must be at least 1.</li>
+          <li><b>Loki headers:</b> Must be a valid JSON object.</li>
+      </ul>
   </script>
